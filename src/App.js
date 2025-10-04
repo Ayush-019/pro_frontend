@@ -1,24 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import Login from './components/Login';
+import Register from './components/Register';
+import ProductList from './components/ProductList';
+import Header from './components/Header';
+
+function Layout({ children }) {
+  const location = useLocation();
+  // Hide header on login and register pages
+  const hideHeader = location.pathname === '/login' || location.pathname === '/register';
+
+  return (
+    <>
+      {!hideHeader && <Header />}
+      <main>{children}</main>
+    </>
+  );
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route 
+          path="/*" 
+          element={
+            <Layout>
+              <Routes>
+                <Route path="login" element={<Login />} />
+                <Route path="register" element={<Register />} />
+                <Route path="products" element={<ProductList />} />
+              </Routes>
+            </Layout>
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 
